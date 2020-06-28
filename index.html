@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Barang</title>
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+    <h2>BELAJAR STORAGE</h2>
+    <br>
+    <br>
+    <br>
+        <div class="row">   
+            <div class="form-group col-md-4">
+              <label for="sel1">PILIH BARANG</label>
+              <select class="form-control" id="barang">
+                <option value="2000000">Acer</option>
+                <option value="5000000">Assus</option>
+                <option value="8000000">Mac</option>
+              </select>
+            </div>
+            <div class="form-group col-md-4">
+              <label>Qty:</label>
+              <input type="text" class="form-control" id="qty">
+            </div>
+            <div class="form-group">
+              <span><button type="button" class="btn btn-primary" onclick="simpan()" style="margin-top:25px">Tambah</button></span>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                 <table id="cart" class="table table-bordered">
+                    <thead>
+                      <tr>
+                          <th>Barang</th>
+                          <th>harga</th>
+                          <th>Item qty</th>
+                          <th>Total</th>
+                          <th>Hapus</th>
+                     </tr>
+                    </thead>
+                     <tbody id="tabelCart">
+
+                     </tbody>
+                </table>
+            </div>
+        </div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
+integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script>
+        let cart = [];
+        $(function () {
+            if (localStorage.cart)
+            {
+                cart = JSON.parse(localStorage.cart);
+                tampilCart();
+            }
+        });
+
+        function simpan() {
+            let harga = $("#barang").val();
+            let name = $("#barang option:selected").text();
+            let qty = $("#qty").val();
+
+            // update qty apabila barang sudah ada 
+            for (let i in cart) {
+                if(cart[i].Barang == name)
+                {
+                    cart[i].Qty = qty;
+                    tampilCart();
+                    simpanKeCart();
+                    return;
+                }
+            }
+            // membuat JSON object
+            let item = { Barang: name,  Harga: harga, Qty: qty }; 
+            cart.push(item);
+            console.log(item);
+            simpanKeCart();
+            tampilCart();
+        }
+
+        function deleteItem(index){
+            cart.splice(index,1); // hapus barang berdasarkan index i
+            tampilCart();
+            simpanKeCart();
+        }
+
+        function simpanKeCart() {
+            if ( window.localStorage)
+            {
+                localStorage.cart = JSON.stringify(cart);
+            }
+        }
+
+        function tampilCart() {
+            if (cart.length == 0) {
+                $("#cart").css("visibility", "hidden");
+                return;
+            }
+
+            $("#cart").css("visibility", "visible");
+            $("#tabelCart").empty();
+            for (let i in cart) {
+                let item = cart[i];
+                let row = "<tr><td>" + item.Barang + "</td><td>" +
+                             item.Harga + "</td><td>" + item.Qty + "</td><td>"
+                             + item.Qty * item.Harga + "</td><td>"
+                             + "<button onclick='deleteItem(" + i + ")' class='btn btn-danger'>Delete</button></td></tr>";
+                $("#tabelCart").append(row);
+            }
+        }
+    </script>
+</html>
