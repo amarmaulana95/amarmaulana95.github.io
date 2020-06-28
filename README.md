@@ -1,2 +1,2 @@
 # amarmaulana95.github.io
-Localstorage
+belajar Localstorage
